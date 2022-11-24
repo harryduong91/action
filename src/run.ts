@@ -46,7 +46,7 @@ const createRelease = async (
       prerelease: pkg.packageJson.version.includes("-"),
       ...github.context.repo,
     });
-  } catch (err) {
+  } catch (err: any) {
     // if we can't find a changelog, the user has probably disabled changelogs
     if (err.code !== "ENOENT") {
       throw err;
@@ -164,8 +164,8 @@ export async function runPublish({
 const requireChangesetsCliPkgJson = (cwd: string) => {
   try {
     return require(resolveFrom(cwd, "@changesets/cli/package.json"));
-  } catch (err) {
-    if (err && err.code === "MODULE_NOT_FOUND") {
+  } catch (err: any) {
+    if (err && err?.code === "MODULE_NOT_FOUND") {
       throw new Error(
         `Have you forgotten to install \`@changesets/cli\` in "${cwd}"?`
       );

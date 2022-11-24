@@ -1,10 +1,8 @@
-import unified from "unified";
 import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
-// @ts-ignore
-import mdastToString from "mdast-util-to-string";
-import { exec } from "@actions/exec";
+import { unified } from "unified";
 import { getPackages, Package } from "@manypkg/get-packages";
+import { toString } from "mdast-util-to-string";
 
 export const BumpLevels = {
   dep: 0,
@@ -52,7 +50,7 @@ export function getChangelogEntry(changelog: string, version: string) {
   for (let i = 0; i < nodes.length; i++) {
     let node = nodes[i];
     if (node.type === "heading") {
-      let stringified: string = mdastToString(node);
+      let stringified: string = toString(node);
       let match = stringified.toLowerCase().match(/(major|minor|patch)/);
       if (match !== null) {
         let level = BumpLevels[match[0] as "major" | "minor" | "patch"];
@@ -82,7 +80,7 @@ export function getChangelogEntry(changelog: string, version: string) {
     );
   }
   return {
-    content: unified().use(remarkStringify).stringify(ast),
+    content: unified().use(remarkStringify).stringify(ast) as string,
     highestLevel: highestLevel,
   };
 }
